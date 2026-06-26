@@ -4,7 +4,10 @@ import random
 import pandas as pd
 import h5py
 
-from decord import VideoReader, cpu
+try:
+    from decord import VideoReader, cpu
+except Exception:
+    VideoReader = cpu = None  # decord not needed for interaction inference
 from torch.utils.data import Dataset
 from torchvision import transforms
 from pathlib import Path

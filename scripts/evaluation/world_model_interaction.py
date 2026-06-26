@@ -22,6 +22,7 @@ from torch import Tensor
 from torch.utils.tensorboard import SummaryWriter
 from PIL import Image
 
+import _xformers_sdpa_shim  # reroute xformers MEA -> SDPA (torch2.11)
 from unifolm_wma.models.samplers.ddim import DDIMSampler
 from unifolm_wma.utils.utils import instantiate_from_config
 
@@ -83,7 +84,7 @@ def load_model_checkpoint(model: nn.Module, ckpt: str) -> nn.Module:
     Returns:
         nn.Module: Model with loaded weights.
     """
-    state_dict = torch.load(ckpt, map_location="cpu")
+    state_dict = torch.load(ckpt, map_location="cpu", weights_only=False)
     if "state_dict" in list(state_dict.keys()):
         state_dict = state_dict["state_dict"]
         try:
